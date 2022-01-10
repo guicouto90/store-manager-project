@@ -10,6 +10,7 @@ const {
   listId, 
   updateProduct, 
   excludeProduct } = require('./controllers/productsController');
+const { insertSale } = require('./controllers/salesController');
 
 app.use(express.json());
 
@@ -17,11 +18,14 @@ app.use(express.json());
 app.get('/', (_request, response) => {
   response.send();
 });
-app.get('/products/:id', listId);
 
 app.get('/products', listAllProducts);
 
+app.get('/products/:id', listId);
+
 app.post('/products', insertProduct);
+
+app.post('/sales', insertSale);
 
 app.put('/products/:id', updateProduct);
 
