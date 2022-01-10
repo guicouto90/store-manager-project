@@ -1,5 +1,6 @@
 const Joi = require('@hapi/joi');
-const { findAll, create, findByName } = require('../models/productsModel');
+const { ObjectId } = require('mongodb');
+const { findAll, create, findByName, findById } = require('../models/productsModel');
 
 // REF: https://stackoverflow.com/questions/57993305/how-can-i-validate-number-of-digits-from-joi-using-nodejs
 // Para desabilitar a conversao automatica do number para string.
@@ -11,7 +12,9 @@ const productSchema = Joi.object({
 const getAllProducts = async () => {
   const products = await findAll();
   
-  return products;
+  return {
+    products: [...products],
+  };
 };
 
 const validateProduct = async (name, quantity) => {
@@ -41,8 +44,23 @@ const createProduct = async (name, quantity) => {
   return newProduct;
 };
 
+const validId = async (id) => {
+  // REF: https://www.geeksforgeeks.org/how-to-check-if-a-string-is-valid-mongodb-objectid-in-node-js/
+  // Verificar se o ID é valido em mongoDB.
+  const valid = ObjectId.isValid(id);
+
+  if (!valid) {
+    const error = { status: 422, message: 'Wrong id format' };
+    throw error;
+  }
+  const productId = await findById(id);
+  
+  return productId;
+};
+
 module.exports = {
   getAllProducts,
   createProduct,
   validateProduct,
+  validId,
 };

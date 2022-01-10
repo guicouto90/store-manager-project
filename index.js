@@ -4,7 +4,7 @@ const app = express();
 
 const PORT = 3000;
 const errHandler = require('./middlewares/errorHandler');
-const { listAllProducts, insertProduct } = require('./controllers/productsController');
+const { listAllProducts, insertProduct, listId } = require('./controllers/productsController');
 
 app.use(express.json());
 
@@ -12,6 +12,7 @@ app.use(express.json());
 app.get('/', (_request, response) => {
   response.send();
 });
+app.get('/products/:id', listId);
 
 app.get('/products', listAllProducts);
 
