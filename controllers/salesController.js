@@ -3,6 +3,7 @@ const {
   createSale,
   getAllSales,
   validId,
+  changeSale,
 } = require('../services/salesService');
 
 const listAllSales = async (req, res, next) => {
@@ -39,8 +40,23 @@ const listSaleId = async (req, res, next) => {
   }
 };
 
+const updateSale = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await validateSale(req.body);
+    await validId(id);
+
+    const sale = await changeSale(id, req.body);
+    return res.status(200).json(sale);
+  } catch (err) {
+    console.error(err.message);
+    return next(err);
+  }
+};
+
 module.exports = {
   insertSale,
   listAllSales,
   listSaleId,
+  updateSale,
 };

@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
-const { create, findAllSales, findById } = require('../models/salesModel');
+const { create, findAllSales, findById, editSale } = require('../models/salesModel');
 // const { findById } = require('../models/productsModel');
 
 const salesSchema = Joi.object({
@@ -60,9 +60,21 @@ const validId = async (id) => {
   return saleId;
 };
 
+const changeSale = async (id, body) => {
+  await editSale(id, body);
+
+  const edit = {
+    _id: id,
+    itensSold: body,
+  };
+
+  return edit;
+};
+
 module.exports = {
   validateSale,
   createSale,
   getAllSales,
   validId,
+  changeSale,
 };
