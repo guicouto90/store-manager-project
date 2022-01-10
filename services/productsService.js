@@ -27,7 +27,7 @@ const validateProduct = async (name, quantity) => {
   const { error } = productSchema.validate({ name, quantity });
 
   if (error) {
-    const error1 = { status: 422, message: error.message };
+    const error1 = { status: 422, message: error.message, code: 'invalid_data' };
     throw error1;
   }
 };
@@ -35,7 +35,7 @@ const validateProduct = async (name, quantity) => {
 const createProduct = async (name, quantity) => {
   const verify = await findByName(name);
   if (verify) {
-    const error = { status: 422, message: 'Product already exists' };
+    const error = { status: 422, message: 'Product already exists', code: 'invalid_data' };
     throw error;
   }
 
@@ -56,7 +56,7 @@ const validId = async (id) => {
   const valid = ObjectId.isValid(id);
 
   if (!valid) {
-    const error = { status: 422, message: 'Wrong id format' };
+    const error = { status: 422, message: 'Wrong id format', code: 'invalid_data' };
     throw error;
   }
   const productId = await findById(id);

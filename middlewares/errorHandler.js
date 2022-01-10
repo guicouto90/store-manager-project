@@ -2,7 +2,7 @@ const errorMiddleware = (err, req, res, _next) => {
   if (err.status) {
     return res.status(err.status).json({ 
       err: {
-        code: 'invalid_data',
+        code: err.code,
         message: err.message, 
       },
     });
