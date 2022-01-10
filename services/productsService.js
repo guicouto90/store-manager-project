@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
-const { findAll, create, findByName, findById } = require('../models/productsModel');
+const { findAll, create, findByName, findById, edit } = require('../models/productsModel');
 
 // REF: https://stackoverflow.com/questions/57993305/how-can-i-validate-number-of-digits-from-joi-using-nodejs
 // Para desabilitar a conversao automatica do number para string.
@@ -19,20 +19,20 @@ const getAllProducts = async () => {
 
 const validateProduct = async (name, quantity) => {
   const { error } = productSchema.validate({ name, quantity });
-  const verify = await findByName(name);
 
   if (error) {
     const error1 = { status: 422, message: error.message };
     throw error1;
   }
-
-  if (verify) {
-    const error2 = { status: 422, message: 'Product already exists' };
-    throw error2;
-  }
 };
 
 const createProduct = async (name, quantity) => {
+  const verify = await findByName(name);
+  if (verify) {
+    const error = { status: 422, message: 'Product already exists' };
+    throw error;
+  }
+
   const productId = await create(name, quantity);
 
   const newProduct = {
@@ -58,9 +58,19 @@ const validId = async (id) => {
   return productId;
 };
 
+const editProduct = async (id, name, quantity) => {
+  await edit(id, name, quantity);
+  return {
+    _id: id,
+    name, 
+    quantity,
+  };
+};
+
 module.exports = {
   getAllProducts,
   createProduct,
   validateProduct,
   validId,
+  editProduct,
 };
