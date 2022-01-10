@@ -31,9 +31,15 @@ const editSale = async (id, body) => {
   );
 };
 
+const deleteSaleId = async (id) => {
+  const connect = await connection();
+  await connect.collection('sales').deleteOne({ _id: ObjectId(id) });
+};
+
 module.exports = {
   findAllSales,
   create,
   findById,
   editSale,
+  deleteSaleId,
 };

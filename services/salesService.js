@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
-const { create, findAllSales, findById, editSale } = require('../models/salesModel');
+const { create, findAllSales, findById, editSale, deleteSaleId } = require('../models/salesModel');
 // const { findById } = require('../models/productsModel');
 
 const salesSchema = Joi.object({
@@ -71,10 +71,32 @@ const changeSale = async (id, body) => {
   return edit;
 };
 
+const deleteSale = async (id, body) => {
+  const valid = ObjectId.isValid(id);
+  if (!valid) {
+    const error = { status: 422, message: 'Wrong sale ID format', code: 'invalid_data' };
+    throw error;
+  }
+
+  const saleId = await findById(id);
+
+  if (!saleId) {
+    const error = { status: 422, message: 'Wrong sale ID format', code: 'invalid_data' };
+    throw error;
+  }
+  await deleteSaleId(id);
+
+  return {
+    _id: id,
+    itensSold: body,
+  };
+};
+
 module.exports = {
   validateSale,
   createSale,
   getAllSales,
   validId,
   changeSale,
+  deleteSale,
 };
