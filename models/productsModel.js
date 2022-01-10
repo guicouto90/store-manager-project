@@ -37,10 +37,16 @@ const edit = async (id, name, quantity) => {
   );
 };
 
+const deleteId = async (id) => {
+  const connect = await connection();
+  await connect.collection('products').deleteOne({ _id: ObjectId(id) });
+};
+
 module.exports = {
   findAll,
   create,
   findByName,
   findById,
   edit,
+  deleteId,
 };

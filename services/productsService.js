@@ -1,6 +1,12 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
-const { findAll, create, findByName, findById, edit } = require('../models/productsModel');
+const { 
+  findAll, 
+  create, 
+  findByName, 
+  findById, 
+  edit, 
+  deleteId } = require('../models/productsModel');
 
 // REF: https://stackoverflow.com/questions/57993305/how-can-i-validate-number-of-digits-from-joi-using-nodejs
 // Para desabilitar a conversao automatica do number para string.
@@ -67,10 +73,21 @@ const editProduct = async (id, name, quantity) => {
   };
 };
 
+const deleteProduct = async (id, name, quantity) => {
+  await deleteId(id);
+
+  return {
+    _id: id,
+    name,
+    quantity,
+  };
+};
+
 module.exports = {
   getAllProducts,
   createProduct,
   validateProduct,
   validId,
   editProduct,
+  deleteProduct,
 };

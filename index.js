@@ -8,7 +8,8 @@ const {
   listAllProducts, 
   insertProduct, 
   listId, 
-  updateProduct } = require('./controllers/productsController');
+  updateProduct, 
+  excludeProduct } = require('./controllers/productsController');
 
 app.use(express.json());
 
@@ -23,6 +24,8 @@ app.get('/products', listAllProducts);
 app.post('/products', insertProduct);
 
 app.put('/products/:id', updateProduct);
+
+app.delete('/products/:id', excludeProduct);
 
 app.use(errHandler);
 
