@@ -1,7 +1,12 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
-const { create, findAllSales, findById, editSale, deleteSaleId } = require('../models/salesModel');
-// const { findById } = require('../models/productsModel');
+const { 
+  create, 
+  findAllSales, 
+  findSaleById, 
+  editSale, 
+  deleteSaleId } = require('../models/salesModel');
+const { findProductById } = require('../models/productsModel');
 
 const salesSchema = Joi.object({
   quantity: Joi.number().min(1).required().strict(),
@@ -16,11 +21,23 @@ const getAllSales = async () => {
 };
 
 const validateSale = async (body) => {
-  for (let index = 0; index < body.length; index += 1) {
+  await Promise.all(body.map(async ({ productId, quantity }) => {
+    const { error } = salesSchema.validate({ quantity });
+    const validateId = ObjectId.isValid(productId);
+    const idExist = await findProductById(productId);
+    if (error || !validateId || !idExist) {
+      const error1 = { 
+        status: 422, 
+        message: 'Wrong product ID or invalid quantity', 
+        code: 'invalid_data' };
+      throw error1;
+    }
+  }));
+  /* for (let index = 0; index < body.length; index += 1) {
     const { quantity, productId } = body[index];
     const { error } = salesSchema.validate({ quantity });
     const validateId = ObjectId.isValid(productId);
-    // const idExist = await findById(productId);
+    // const idExist = await findSaleById(productId);
     if (error || !validateId) {
       const error1 = { 
         status: 422, 
@@ -28,7 +45,7 @@ const validateSale = async (body) => {
         code: 'invalid_data' };
       throw error1;
     }
-  }
+  } */
 };
 
 const createSale = async (body) => {
@@ -50,7 +67,7 @@ const validId = async (id) => {
     const error = { status: 404, message: 'Sale not found', code: 'not_found' };
     throw error;
   }
-  const saleId = await findById(id);
+  const saleId = await findSaleById(id);
 
   if (!saleId) {
     const error = { status: 404, message: 'Sale not found', code: 'not_found' };
@@ -78,7 +95,7 @@ const deleteSale = async (id) => {
     throw error;
   }
 
-  const saleId = await findById(id);
+  const saleId = await findSaleById(id);
 
   if (!saleId) {
     const error = { status: 422, message: 'Wrong sale ID format', code: 'invalid_data' };
@@ -95,6 +112,19 @@ const deleteSale = async (id) => {
   return deleted;
 };
 
+const validateQuantity = async (body) => {
+  await Promise.all(body.map(async ({ productId, quantity }) => {
+    const product = await findProductById(productId);
+    if (product.quantity < quantity) {
+      const error = { 
+        status: 404, 
+        message: 'Such amount is not permitted to sell', 
+        code: 'stock_problem' };
+      throw error;
+    }
+  }));
+};
+
 module.exports = {
   validateSale,
   createSale,
@@ -102,4 +132,5 @@ module.exports = {
   validId,
   changeSale,
   deleteSale,
+  validateQuantity,
 };

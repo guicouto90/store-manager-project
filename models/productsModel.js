@@ -22,7 +22,7 @@ const findByName = async (name) => {
   return query;
 };
 
-const findById = async (id) => {
+const findProductById = async (id) => {
   const connect = await connection();
   const query = await connect.collection('products').findOne({ _id: ObjectId(id) });
 
@@ -46,7 +46,7 @@ module.exports = {
   findAll,
   create,
   findByName,
-  findById,
+  findProductById,
   edit,
   deleteId,
 };

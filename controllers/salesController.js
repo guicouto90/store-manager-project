@@ -5,6 +5,7 @@ const {
   validId,
   changeSale,
   deleteSale,
+  validateQuantity,
 } = require('../services/salesService');
 
 const listAllSales = async (req, res, next) => {
@@ -20,7 +21,7 @@ const listAllSales = async (req, res, next) => {
 const insertSale = async (req, res, next) => {
   try {
     await validateSale(req.body);
-    
+    await validateQuantity(req.body);
     const sale = await createSale(req.body);
     return res.status(200).json(sale);
   } catch (err) {

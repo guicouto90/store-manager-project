@@ -30,7 +30,7 @@ const create = async (body) => {
   return insertedId;
 };
 
-const findById = async (id) => {
+const findSaleById = async (id) => {
   const connect = await connection();
   const query = await connect.collection('sales').findOne({ _id: ObjectId(id) });
   return query;
@@ -68,7 +68,7 @@ const deleteSaleId = async (id, body) => {
 module.exports = {
   findAllSales,
   create,
-  findById,
+  findSaleById,
   editSale,
   deleteSaleId,
 };

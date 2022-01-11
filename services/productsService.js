@@ -4,7 +4,7 @@ const {
   findAll, 
   create, 
   findByName, 
-  findById, 
+  findProductById, 
   edit, 
   deleteId } = require('../models/productsModel');
 
@@ -59,7 +59,7 @@ const validId = async (id) => {
     const error = { status: 422, message: 'Wrong id format', code: 'invalid_data' };
     throw error;
   }
-  const productId = await findById(id);
+  const productId = await findProductById(id);
   
   return productId;
 };
