@@ -5,7 +5,8 @@ const {
   findAllSales, 
   findSaleById, 
   editSale, 
-  deleteSaleId } = require('../models/salesModel');
+  deleteSaleId, 
+} = require('../models/salesModel');
 const { findProductById } = require('../models/productsModel');
 
 const salesSchema = Joi.object({
@@ -33,19 +34,6 @@ const validateSale = async (body) => {
       throw error1;
     }
   }));
-  /* for (let index = 0; index < body.length; index += 1) {
-    const { quantity, productId } = body[index];
-    const { error } = salesSchema.validate({ quantity });
-    const validateId = ObjectId.isValid(productId);
-    // const idExist = await findSaleById(productId);
-    if (error || !validateId) {
-      const error1 = { 
-        status: 422, 
-        message: 'Wrong product ID or invalid quantity', 
-        code: 'invalid_data' };
-      throw error1;
-    }
-  } */
 };
 
 const createSale = async (body) => {

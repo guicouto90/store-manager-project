@@ -1,22 +1,10 @@
 const express = require('express');
 
 const app = express();
-
 const PORT = 3000;
 const errHandler = require('./middlewares/errorHandler');
-const { 
-  listAllProducts, 
-  insertProduct, 
-  listId, 
-  updateProduct, 
-  excludeProduct } = require('./controllers/productsController');
-
-const { 
-  insertSale, 
-  listAllSales, 
-  listSaleId, 
-  updateSale, 
-  excludeSale } = require('./controllers/salesController');
+const productsRouter = require('./router/productsRouter');
+const salesRouter = require('./router/salesRouter');
 
 app.use(express.json());
 
@@ -25,25 +13,9 @@ app.get('/', (_request, response) => {
   response.send();
 });
 
-app.get('/products', listAllProducts);
+app.use('/products', productsRouter);
 
-app.get('/sales', listAllSales);
-
-app.get('/products/:id', listId);
-
-app.get('/sales/:id', listSaleId);
-
-app.post('/products', insertProduct);
-
-app.post('/sales', insertSale);
-
-app.put('/products/:id', updateProduct);
-
-app.put('/sales/:id', updateSale);
-
-app.delete('/products/:id', excludeProduct);
-
-app.delete('/sales/:id', excludeSale);
+app.use('/sales', salesRouter);
 
 app.use(errHandler);
 

@@ -18,13 +18,6 @@ const create = async (body) => {
       { $inc: { quantity: -quantity } },
     );
   }));
-  /* for (let index = 0; index < body.length; index += 1) {
-    const { productId, quantity } = body[index];
-    await connect.collection('products').updateOne(
-      { _id: ObjectId(productId) },
-      { $inc: { quantity: -quantity } },
-    );
-  } */
   const { insertedId } = await connect.collection('sales').insertOne({ itensSold });
 
   return insertedId;
@@ -54,14 +47,6 @@ const deleteSaleId = async (id, body) => {
       { $inc: { quantity } },
     );
   }));
-  /* for (let index = 0; index < body.length; index += 1) {
-    const { productId, quantity } = body[index];
-    console.log(quantity);
-    await connect.collection('products').updateOne(
-      { _id: ObjectId(productId) },
-      { $inc: { quantity } },
-    );
-  } */
   await connect.collection('sales').deleteOne({ _id: ObjectId(id) });
 };
 
