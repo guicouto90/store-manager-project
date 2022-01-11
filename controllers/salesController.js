@@ -58,8 +58,7 @@ const updateSale = async (req, res, next) => {
 const excludeSale = async (req, res, next) => {
   try {
     const { id } = req.params;
-    
-    const sale = await deleteSale(id, req.body);
+    const sale = await deleteSale(id);
     return res.status(200).json(sale);
   } catch (err) {
     console.error(err.message);

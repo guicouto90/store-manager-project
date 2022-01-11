@@ -71,7 +71,7 @@ const changeSale = async (id, body) => {
   return edit;
 };
 
-const deleteSale = async (id, body) => {
+const deleteSale = async (id) => {
   const valid = ObjectId.isValid(id);
   if (!valid) {
     const error = { status: 422, message: 'Wrong sale ID format', code: 'invalid_data' };
@@ -84,12 +84,15 @@ const deleteSale = async (id, body) => {
     const error = { status: 422, message: 'Wrong sale ID format', code: 'invalid_data' };
     throw error;
   }
-  await deleteSaleId(id);
 
-  return {
+  const deleted = {
     _id: id,
-    itensSold: body,
+    itensSold: saleId.itensSold,
   };
+
+  await deleteSaleId(id, saleId.itensSold);
+
+  return deleted;
 };
 
 module.exports = {
