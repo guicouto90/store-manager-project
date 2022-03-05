@@ -33,6 +33,7 @@ const validateProduct = async (name, quantity) => {
 };
 
 const createProduct = async (name, quantity) => {
+  await validateProduct(name, quantity);
   const verify = await findByName(name);
   if (verify) {
     const error = { status: 422, message: 'Product already exists', code: 'invalid_data' };
@@ -65,6 +66,9 @@ const validId = async (id) => {
 };
 
 const editProduct = async (id, name, quantity) => {
+  await validateProduct(name, quantity);
+  await validId(id);
+
   await edit(id, name, quantity);
   return {
     _id: id,
@@ -74,6 +78,7 @@ const editProduct = async (id, name, quantity) => {
 };
 
 const deleteProduct = async (id, name, quantity) => {
+  await validId(id);
   await deleteId(id);
 
   return {

@@ -1,11 +1,9 @@
 const { 
-  validateSale,
   createSale,
   getAllSales,
   validId,
   changeSale,
   deleteSale,
-  validateQuantity,
 } = require('../services/salesService');
 
 const listAllSales = async (req, res, next) => {
@@ -20,8 +18,6 @@ const listAllSales = async (req, res, next) => {
 
 const insertSale = async (req, res, next) => {
   try {
-    await validateSale(req.body);
-    await validateQuantity(req.body);
     const sale = await createSale(req.body);
     return res.status(200).json(sale);
   } catch (err) {
@@ -45,9 +41,6 @@ const listSaleId = async (req, res, next) => {
 const updateSale = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await validateSale(req.body);
-    await validId(id);
-
     const sale = await changeSale(id, req.body);
     return res.status(200).json(sale);
   } catch (err) {

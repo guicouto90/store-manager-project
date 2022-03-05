@@ -1,7 +1,6 @@
 const { 
   getAllProducts, 
   createProduct, 
-  validateProduct, 
   validId, 
   editProduct, 
   deleteProduct } = require('../services/productsService');
@@ -19,7 +18,6 @@ const listAllProducts = async (req, res, next) => {
 const insertProduct = async (req, res, next) => {
   try {
     const { name, quantity } = req.body;
-    await validateProduct(name, quantity);
 
     const product = await createProduct(name, quantity);
     return res.status(201).json(product);
@@ -45,8 +43,7 @@ const updateProduct = async (req, res, next) => {
   try {
     const { name, quantity } = req.body;
     const { id } = req.params;
-    await validateProduct(name, quantity);
-    await validId(id);
+    
     const product = await editProduct(id, name, quantity);
     
     return res.status(200).json(product);
@@ -60,8 +57,6 @@ const excludeProduct = async (req, res, next) => {
   try {
     const { name, quantity } = req.body;
     const { id } = req.params;
-
-    await validId(id);
     const product = await deleteProduct(id, name, quantity);
     
     return res.status(200).json(product);

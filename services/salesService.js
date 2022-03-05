@@ -36,7 +36,22 @@ const validateSale = async (body) => {
   }));
 };
 
+const validateQuantity = async (body) => {
+  await Promise.all(body.map(async ({ productId, quantity }) => {
+    const product = await findProductById(productId);
+    if (product.quantity < quantity) {
+      const error = { 
+        status: 404, 
+        message: 'Such amount is not permitted to sell', 
+        code: 'stock_problem' };
+      throw error;
+    }
+  }));
+};
+
 const createSale = async (body) => {
+  await validateSale(body);
+  await validateQuantity(body);
   const saleId = await create(body);
 
   const newSale = {
@@ -66,6 +81,8 @@ const validId = async (id) => {
 };
 
 const changeSale = async (id, body) => {
+  await validateSale(body);
+  await validId(id);
   await editSale(id, body);
 
   const edit = {
@@ -98,19 +115,6 @@ const deleteSale = async (id) => {
   await deleteSaleId(id, saleId.itensSold);
 
   return deleted;
-};
-
-const validateQuantity = async (body) => {
-  await Promise.all(body.map(async ({ productId, quantity }) => {
-    const product = await findProductById(productId);
-    if (product.quantity < quantity) {
-      const error = { 
-        status: 404, 
-        message: 'Such amount is not permitted to sell', 
-        code: 'stock_problem' };
-      throw error;
-    }
-  }));
 };
 
 module.exports = {
